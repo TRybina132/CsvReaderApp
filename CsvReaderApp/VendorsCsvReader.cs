@@ -23,7 +23,18 @@ public class VendorsCsvReader
             r.Id = Guid.NewGuid().ToString();
             entities.Add(r);
         }
+        
+        var duplicates = entities
+            .GroupBy(v => new { v.TpepPickupDatetime, v.TpepDropoffDatetime, v.PassengerCount })
+            .Where(g => g.Count() > 1)
+            .SelectMany(g => g.Skip(1))
+            .ToList();
 
+        // Remove duplicates from the list of vendors to update
+        entities = entities.Except(duplicates).ToList();
+
+        await WriteToCsvAsync(duplicates);
+        
         return entities;
     }
     
@@ -42,5 +53,14 @@ public class VendorsCsvReader
             Map(m => m.FareAmount).Name("fare_amount");
             Map(m => m.TipAmount).Name("tip_amount");
         }
+    }
+
+    private async Task WriteToCsvAsync(List<VendorEntity> vendors)
+    {
+        // Write duplicates to a CSV file
+        await using var writer = new StreamWriter("duplicates.csv");
+        await using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        
+        await csv.WriteRecordsAsync(vendors);
     }
 }
