@@ -5,7 +5,7 @@ using CsvReaderApp.Entities;
 
 namespace CsvReaderApp;
 
-public class VendorsCvsReader
+public class VendorsCsvReader
 {
     public async Task<IEnumerable<VendorEntity>> ReadVendorsFromCsvAsync(string filePath)
     {
@@ -20,6 +20,7 @@ public class VendorsCvsReader
 
         await foreach (var r in records)
         {
+            r.Id = Guid.NewGuid().ToString();
             entities.Add(r);
         }
 

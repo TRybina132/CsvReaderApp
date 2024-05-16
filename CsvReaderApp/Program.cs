@@ -3,8 +3,8 @@
 using CsvReaderApp;
 using CsvReaderApp.Entities;
 
-VendorsCvsReader reader = new VendorsCvsReader();
+const string csvFilePath = @"C:\Users\Tanya\Downloads\sample-cab-data.csv";
 
-var records = await reader.ReadVendorsFromCsvAsync(@"C:\Users\Tanya\Downloads\sample-cab-data.csv");
+VendorService vendorService = new VendorService(new AppDbContext(), new VendorsCsvReader());
 
-Console.WriteLine("Hello, World!");
+Console.WriteLine(await vendorService.LoadFromCsvAndUploadAsync(csvFilePath));
