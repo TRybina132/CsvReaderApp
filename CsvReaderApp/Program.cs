@@ -3,8 +3,12 @@
 using CsvReaderApp;
 using CsvReaderApp.Entities;
 
-const string csvFilePath = @"C:\Users\Tanya\Downloads\sample-cab-data.csv";
+const string csvFilePath = @"sample-cab-data.csv";
 
 VendorService vendorService = new VendorService(new AppDbContext(), new VendorsCsvReader());
 
-Console.WriteLine(await vendorService.LoadFromCsvAndUploadAsync(csvFilePath));
+var rows = await vendorService.LoadFromCsvAndUploadAsync(csvFilePath);
+
+Console.WriteLine($"Rows inserted: {rows}");
+
+await vendorService.QueryTestAsync();

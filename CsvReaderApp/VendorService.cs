@@ -1,4 +1,5 @@
-﻿using EFCore.BulkExtensions;
+﻿using CsvReaderApp.Entities;
+using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace CsvReaderApp;
@@ -36,5 +37,29 @@ public class VendorService
             Console.WriteLine(e);
             return 0;
         }
+    }
+
+    public async Task QueryTestAsync()
+    {
+        var highestAverageTipLocation = await _dbContext.Vendors
+            .GroupBy(v => v.PULocationID)
+            .Select(g => new { PULocationID = g.Key, AverageTip = g.Average(v => v.TipAmount) })
+            .OrderByDescending(g => g.AverageTip)
+            .FirstOrDefaultAsync();
+        
+        var longestFaresByDistance =  await _dbContext.Vendors
+            .OrderByDescending(v => v.TripDistance)
+            .Take(100)
+            .ToListAsync();
+        
+        string sqlQuery = "SELECT TOP 100 \n    *,\n    DATEDIFF(MINUTE, TpepPickupDatetime, TpepDropoffDatetime) AS TravelTime\nFROM \n    Vendors\nORDER BY \n    TravelTime DESC";
+        
+        var longestFaresByTime = await _dbContext.Vendors
+            .FromSqlRaw(sqlQuery)
+            .ToListAsync();
+
+        Console.WriteLine(highestAverageTipLocation);
+        Console.WriteLine(longestFaresByDistance.Count());
+        Console.WriteLine(longestFaresByTime.Count());
     }
 }
