@@ -16,16 +16,25 @@ public class VendorService
 
     public async Task<int> LoadFromCsvAndUploadAsync(string filePath)
     {
-        if (await _dbContext.Database.EnsureCreatedAsync())
+        try
         {
-            await _dbContext.Database.MigrateAsync();
-        }
+            if (await _dbContext.Database.EnsureCreatedAsync())
+            {
+                await _dbContext.Database.MigrateAsync();
+            }
         
-        var entities = await _csvReader.ReadVendorsFromCsvAsync(filePath);
+            var entities = await _csvReader.ReadVendorsFromCsvAsync(filePath);
         
-        await _dbContext.BulkInsertAsync(entities);
+            await _dbContext.BulkInsertAsync(entities);
 
-        await _dbContext.BulkSaveChangesAsync();
-        return 0;
+            await _dbContext.BulkSaveChangesAsync();
+        
+            return entities.Count();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return 0;
+        }
     }
 }

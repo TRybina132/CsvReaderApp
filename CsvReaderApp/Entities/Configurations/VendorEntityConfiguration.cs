@@ -15,11 +15,22 @@ public class VendorEntityConfiguration : IEntityTypeConfiguration<VendorEntity>
 
 
         // For conversion of Y and N values
-        var converter = new ValueConverter<string, string>(
+        var flagConverter = new ValueConverter<string, string>(
             v => v == "Y" ? "Yes" : "No",
+            v => v);
+        
+        // For converting datetime properties to UTC
+        var utcTimeConverter = new ValueConverter<DateTime, DateTime>(
+            v => v.ToUniversalTime(),
             v => v);
 
         builder.Property(v => v.StoreAndFwdFlag)
-            .HasConversion(converter);
+            .HasConversion(flagConverter);
+
+        builder.Property(v => v.TpepDropoffDatetime)
+            .HasConversion(utcTimeConverter);
+        
+        builder.Property(v => v.TpepPickupDatetime)
+            .HasConversion(utcTimeConverter);
     }
 }

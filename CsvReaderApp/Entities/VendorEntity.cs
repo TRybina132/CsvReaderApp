@@ -3,8 +3,8 @@
 public class VendorEntity
 {
     public string Id { get; set; }
-    public DateTimeOffset TpepPickupDatetime { get; set; }
-    public DateTimeOffset TpepDropoffDatetime { get; set; }
+    public DateTime TpepPickupDatetime { get; set; }
+    public DateTime TpepDropoffDatetime { get; set; }
     public int? PassengerCount { get; set; }
     public double TripDistance { get; set; }
     public string StoreAndFwdFlag { get; set; }

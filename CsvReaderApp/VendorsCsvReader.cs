@@ -38,7 +38,7 @@ public class VendorsCsvReader
         return entities;
     }
     
-    public sealed class VendorEntityMap : ClassMap<VendorEntity>
+    private sealed class VendorEntityMap : ClassMap<VendorEntity>
     {
         public VendorEntityMap()
         {
