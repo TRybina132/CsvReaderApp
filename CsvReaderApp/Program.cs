@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
+﻿
 using CsvReaderApp;
 using CsvReaderApp.Entities;
 
@@ -12,3 +11,5 @@ var rows = await vendorService.LoadFromCsvAndUploadAsync(csvFilePath);
 Console.WriteLine($"Rows inserted: {rows}");
 
 await vendorService.QueryTestAsync();
+
+// After running program 29 889 rows were inserted to table and 111 duplicated were found
